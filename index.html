@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymStats Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/notifications.css">
+    <!-- Dodaj Chart.js przed innymi skryptami -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <a href="#" class="logo" id="logo-link">
+                <i class="fas fa-dumbbell"></i>
+                <span>GymStats Pro</span>
+            </a>
+            <div class="nav-links">        
+                <a href="#features" class="nav-link">Funkcje</a>
+                <a href="#about" class="nav-link">O nas</a>
+                <button id="login-button" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Zaloguj się
+                </button>
+                <a href="#" id="dashboard-link" class="btn-primary hidden">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </div>
+        </nav>
+    </header>
+
+
+    <main>
+        <section id="landing-page">
+            <div class="hero-content">
+                <h1>Transformuj swój trening z GymStats Pro</h1>
+                <p class="hero-subtitle">Zaawansowane śledzenie postępów, personalizowane statystyki i inteligentne analizy treningowe</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary btn-large" id="get-started-btn">
+                        <i class="fas fa-rocket"></i>
+                        Rozpocznij za darmo
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section id="features" class="features-section">
+            <h2 class="section-title">Funkcje</h2>
+            <div class="features-container">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Śledzenie Postępów</h3>
+                    <p>Zapisuj i monitoruj swoje wyniki treningowe w czasie rzeczywistym. Śledź postępy w kluczowych ćwiczeniach siłowych.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-database"></i>
+                    <h3>Bezpieczne Przechowywanie</h3>
+                    <p>Twoje dane są bezpiecznie przechowywane w chmurze, dostępne z każdego urządzenia w dowolnym momencie.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Dostęp Mobilny</h3>
+                    <p>Korzystaj z aplikacji na dowolnym urządzeniu - komputer, tablet czy telefon. Responsywny design zapewnia wygodę użytkowania.</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-history"></i>
+                    <h3>Historia Treningów</h3>
+                    <p>Przeglądaj historię swoich treningów, analizuj postępy i identyfikuj obszary do poprawy.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2 class="section-title">O nas</h2>
+            <div class="about-container">
+                <div class="about-content">
+                    <h3>Nasza Misja</h3>
+                    <p>W GymStats Pro wierzymy, że kluczem do sukcesu w treningu siłowym jest systematyczne śledzenie postępów. Nasza aplikacja powstała z myślą o osobach, które chcą w prosty i efektywny sposób monitorować swoje osiągnięcia na siłowni.</p>
+                    
+                    <h3>Dlaczego My?</h3>
+                    <p>Oferujemy proste i intuicyjne narzędzie, które pomoże Ci w osiągnięciu Twoich celów treningowych. Bez zbędnych komplikacji, bez nadmiaru funkcji - tylko to, czego naprawdę potrzebujesz.</p>
+                    
+                    <h3>Nasza Filozofia</h3>
+                    <p>Wierzymy w prostotę i skuteczność. GymStats Pro to narzędzie stworzone przez pasjonatów treningu siłowego dla osób, które chcą realnie śledzić swoje postępy i osiągać coraz lepsze wyniki.</p>
+                </div>
+            </div>
+        </section>
+        <section id="auth-section" class="hidden">
+            <div class="auth-container">
+                <div id="login-form-container">
+                    <h2>Zaloguj się</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Hasło</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Zaloguj się</button>
+                    </form>
+                    <p>Nie masz konta? <a href="#" id="show-register">Zarejestruj się</a></p>
+                    <p class="hidden" id="reset-password-link"><a href="#">Zapomniałeś hasła?</a></p>
+                </div>
+        
+                <div id="register-form-container" class="hidden">
+                    <h2>Zarejestruj się</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-nickname">Nickname</label>
+                            <input type="text" 
+                               id="register-nickname" 
+                               required 
+                               minlength="3" 
+                               maxlength="20" 
+                               pattern="[a-zA-Z0-9_-]*"
+                               title="Dozwolone znaki: litery, cyfry, - i _">
+                            <small class="nickname-requirements">Nickname musi mieć 3-20 znaków i może zawierać tylko litery, cyfry, - i _</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Hasło</label>
+                            <input type="password" id="register-password" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn-primary">Zarejestruj się</button>
+                    </form>
+                    <p>Masz już konto? <a href="#" id="show-login">Zaloguj się</a></p>
+                </div>
+        
+                <div id="reset-password-container" class="hidden">
+                    <h2>Resetuj hasło</h2>
+                    <form id="reset-password-form">
+                        <div class="form-group">
+                            <label for="reset-email">Email</label>
+                            <input type="email" id="reset-email" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Wyślij link do resetowania</button>
+                    </form>
+                    <p><a href="#" id="back-to-login">Powrót do logowania</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="user-dashboard" class="hidden">
+            <!-- Nagłówek dashboardu -->
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <span id="user-nickname"></span>
+                    <span id="user-email"></span>
+                    <button id="logout-button" class="btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Wyloguj
+                    </button>
+                </div>
+            </div>
+        
+            <!-- Główna zawartość dashboardu -->
+            <div class="dashboard-content">
+                <!-- Menu nawigacyjne -->
+                <nav class="dashboard-nav">
+                    <ul>
+                        <li>
+                            <a href="#overview" class="active">
+                                <i class="fas fa-home"></i> Przegląd
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#add-score">
+                                <i class="fas fa-plus-circle"></i> Dodaj wynik
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#scores-list">
+                                <i class="fas fa-list"></i> Lista wyników
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#statistics">
+                                <i class="fas fa-chart-bar"></i> Statystyki
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#exercises">
+                                <i class="fas fa-dumbbell"></i> Ćwiczenia
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#activity">
+                                <i class="fas fa-history"></i> Historia aktywności
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+        
+                <!-- Sekcje dashboardu -->
+                <div class="dashboard-sections">
+                    <!-- Sekcja Przegląd -->
+                    <div id="overview" class="dashboard-section active">
+                        <h2>Przegląd</h2>
+                        <div class="overview-stats">
+                            <div class="stat-card">
+                                <h3>Ostatni trening</h3>
+                                <p id="last-workout-date">Ładowanie...</p>
+                                <p id="last-workout-details">Ładowanie...</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Liczba treningów</h3>
+                                <p id="total-workouts">Ładowanie...</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Ulubione ćwiczenie</h3>
+                                <p id="favorite-exercise">Ładowanie...</p>
+                            </div>
+                        </div>
+                        <div class="recent-workouts">
+                            <h3>Ostatnie treningi</h3>
+                            <ul id="recent-workouts-list">
+                                <!-- Lista ostatnich treningów będzie generowana dynamicznie -->
+                            </ul>
+                        </div>
+                    </div>
+        
+                    <!-- Sekcja Dodaj wynik -->
+                    <div id="add-score" class="dashboard-section">
+                        <h2>Dodaj nowy wynik</h2>
+                        <form id="score-form">
+                            <div class="form-group">
+                                <label for="exercise-type">Ćwiczenie</label>
+                                <select id="exercise-type" required>
+                                    <option value="">Wybierz ćwiczenie</option>
+                                    <!-- Opcje będą dodawane tutaj -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Ciężar (kg)</label>
+                                <input type="number" id="weight" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reps">Powtórzenia</label>
+                                <input type="number" id="reps" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Zapisz wynik</button>
+                        </form>
+                    </div>
+        
+                    <!-- Sekcja Lista wyników -->
+                    <div id="scores-list" class="dashboard-section">
+                        <h2>Twoje wyniki</h2>
+                        <div class="filtering-section">
+                            <form id="filter-form">
+                                <select id="filter-exercise">
+                                    <option value="">Wszystkie ćwiczenia</option>
+                                    <option value="Wyciskanie sztangi">Wyciskanie sztangi</option>
+                                    <option value="Przysiad">Przysiad</option>
+                                    <option value="Martwy ciąg">Martwy ciąg</option>
+                                </select>
+                                <input type="date" id="filter-date-from" placeholder="Od">
+                                <input type="date" id="filter-date-to" placeholder="Do">
+                                <button type="submit" class="btn-primary">Filtruj</button>
+                            </form>
+                            <select id="sort-select">
+                                <option value="date-desc">Data (najnowsze)</option>
+                                <option value="date-asc">Data (najstarsze)</option>
+                                <option value="weight-desc">Ciężar (największy)</option>
+                                <option value="weight-asc">Ciężar (najmniejszy)</option>
+                            </select>
+                        </div>
+                        <ul class="scores-list"></ul>
+                    </div>
+        
+                    <!-- Sekcja Statystyki -->
+                    <div id="statistics" class="dashboard-section">
+                        <h2>Twoje statystyki</h2>
+                        <div id="averages"></div>
+                        <div class="charts-container">
+                            <div class="chart-wrapper">
+                                <h3>Postęp w czasie</h3>
+                                <canvas id="progressChart" width="800" height="400"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h3>Rozkład ćwiczeń</h3>
+                                <canvas id="exerciseDistributionChart" width="800" height="400"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h3>Maksymalne ciężary</h3>
+                                <canvas id="maxWeightChart" width="800" height="400"></canvas>
+                            </div>
+                        </div>
+                        <button id="export-statistics" class="btn-primary">
+                            <i class="fas fa-download"></i> Eksportuj Statystyki
+                        </button>
+                    </div>
+                    <!-- Sekcja Ćwiczenia -->
+                    <div id="exercises" class="dashboard-section">
+                        <h2>Ćwiczenia</h2>
+                        <button id="add-exercise-button" class="btn-primary" title="Dodaj nowe ćwiczenie">
+                            <i class="fas fa-plus-circle"></i> Dodaj ćwiczenie
+                        </button>
+                        <ul id="exercises-list">
+                            <li>
+                                <div class="exercise-content">
+                                    <strong>Nazwa ćwiczenia</strong>
+                                    <p>Opis ćwiczenia</p>
+                                </div>
+                                <div class="button-group">
+                                    <button class="edit-button">
+                                        <i class="fas fa-edit"></i> Edytuj
+                                    </button>
+                                    <button class="delete-button">
+                                        <i class="fas fa-trash-alt"></i> Usuń
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div id="edit-exercise-dialog" class="custom-dialog hidden">
+                            <div class="dialog-content">
+                                <h3>Edytuj ćwiczenie</h3>
+                                <form id="edit-exercise-form">
+                                    <div class="form-group">
+                                        <label for="edit-exercise-name">Nazwa ćwiczenia</label>
+                                        <input type="text" id="edit-exercise-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-exercise-description">Opis ćwiczenia (opcjonalny)</label>
+                                        <input type="text" id="edit-exercise-description">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-weight-checkbox"> Ciężar (kg)</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-reps-checkbox"> Powtórzenia</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-time-checkbox"> Czas (min)</label>
+                                    </div>
+                                    <div class="dialog-buttons">
+                                        <button type="button" id="cancel-edit-exercise" class="btn-secondary">Anuluj</button>
+                                        <button type="submit" class="btn-primary">Zapisz zmiany</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="add-exercise-dialog" class="custom-dialog hidden">
+                            <div class="dialog-content">
+                                <h3>Dodaj nowe ćwiczenie</h3>
+                                <form id="add-exercise-form">
+                                    <div class="form-group">
+                                        <label for="exercise-name">Nazwa ćwiczenia</label>
+                                        <input type="text" id="exercise-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exercise-description">Opis ćwiczenia (opcjonalny)</label>
+                                        <input type="text" id="exercise-description">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="weight-checkbox"> Ciężar (kg)</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="reps-checkbox"> Powtórzenia</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="time-checkbox"> Czas (min)</label>
+                                    </div>
+                                    <div class="dialog-buttons">
+                                        <button type="button" id="cancel-add-exercise" class="btn-secondary">Anuluj</button>
+                                        <button type="submit" class="btn-primary">Dodaj ćwiczenie</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sekcja Historia aktywności -->
+                    <div id="activity" class="dashboard-section">
+                        <h2>Historia aktywności</h2>
+                        <ul id="activity-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 GymStats Pro. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+    <div id="custom-confirm-dialog-exercise" class="custom-dialog-exercise hidden">
+        <div class="dialog-content-exercise">
+            <h3><i class="fas fa-exclamation-triangle"></i> Potwierdzenie usunięcia</h3>
+            <p>Czy na pewno chcesz usunąć to ćwiczenie? Tej operacji nie można cofnąć.</p>
+            <div class="dialog-buttons-exercise">
+                <button id="cancel-delete-exercise" class="btn-secondary">
+                    <i class="fas fa-times"></i> Anuluj
+                </button>
+                <button id="confirm-delete-exercise" class="btn-primary">
+                    <i class="fas fa-trash-alt"></i> Usuń
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="custom-confirm-dialog" class="custom-dialog hidden">
+        <div class="dialog-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Potwierdzenie usunięcia</h3>
+            <p>Czy na pewno chcesz usunąć ten wynik? Tej operacji nie można cofnąć.</p>
+            <div class="dialog-buttons">
+                <button id="cancel-delete" class="btn-secondary">
+                    <i class="fas fa-times"></i> Anuluj
+                </button>
+                <button id="confirm-delete" class="btn-primary">
+                    <i class="fas fa-trash-alt"></i> Usuń
+                </button>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { firebaseConfig } from "./src/js/config/firebase-config.js";
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            window.firebaseApp = app; // Opcjonalnie, jeśli potrzebujesz dostępu w innych miejscach
+        } catch (error) {
+            console.error("Błąd inicjalizacji Firebase:", error);
+        }
+    </script>
+        <script type="module" src="src/js/app.js"></script>
+</body>
+</html>
