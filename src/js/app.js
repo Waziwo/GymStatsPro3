@@ -33,8 +33,8 @@ class App {
             this.initializeComponents();
 
             // Setup event listeners and auth state
-            this.initializeElementsApp();
-            this.setupEventListenersApp();
+            this.initializeElements();
+            this.setupEventListeners();
             this.setupAuthStateListener();
             this.setupDashboardNavigation(); // Dodana nowa metoda
 
@@ -44,19 +44,17 @@ class App {
     }
 
     initializeServices() {
-        this.notificationManager = new NotificationManager();
+        this.notificationManager = new NotificationManager(); // Tworzenie instancji NotificationManager
         this.authService = new AuthService();
-        this.scoreService = new ScoreService(this.notificationManager);
+        this.scoreService = new ScoreService(this.notificationManager); // Przekazywanie NotificationManager
         this.userService = new UserService();
         this.activityLogger = new ActivityLogger();
-        this.exerciseService = new ExerciseService(this.notificationManager); // Inicjalizacja ExerciseService
-        
-        // Teraz możesz utworzyć ScoreDisplay
-        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
+        this.exerciseService = new ExerciseService(this.notificationManager);
     }
 
     initializeComponents() {
         this.statisticsDisplay = new StatisticsDisplay(this.scoreService);
+        this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager); // Dodaj notificationManager
         this.authForms = new AuthForms(
             this.authService, 
             this.scoreService, 
@@ -66,7 +64,7 @@ class App {
         );
     }
 
-    initializeElementsApp() {
+    initializeElements() {
         this.loginButton = document.getElementById('login-button');
         this.landingPage = document.getElementById('landing-page');
         this.authSection = document.getElementById('auth-section');
@@ -130,7 +128,6 @@ class App {
                 this.addExerciseForm.reset();
                 this.addExerciseDialog.classList.add('hidden');
                 this.notificationManager.show('Ćwiczenie dodane pomyślnie!', 'success'); // Pokaż powiadomienie
-                this.loadExercises();
             } catch (error) {
                 console.error('Błąd podczas dodawania ćwiczenia:', error);
                 this.notificationManager.show('Błąd podczas dodawania ćwiczenia: ' + error.message, 'error');
@@ -150,23 +147,15 @@ class App {
     
                 const exercises = await this.exerciseService.getExercises(user.uid);
                 if (Array.isArray(exercises)) {
-                    // Sortuj ćwiczenia alfabetycznie od A do Z
-                    exercises.sort((a, b) => a.name.localeCompare(b.name));
-    
                     exercisesList.innerHTML = exercises.map(exercise => `
                         <li>
-                            <div class="exercise-content">
-                                <strong>${exercise.name}</strong>
-                                <span>${exercise.description}</span>
-                            </div>
-                            <div class="button-group">
-                                <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
-                                <button class="delete-button" data-id="${exercise.id}">Usuń</button>
-                            </div>
+                            <strong>${exercise.name}</strong>: ${exercise.description}
+                            <button class="edit-button" data-id="${exercise.id}">Edytuj</button>
+                            <button class="delete-button" data-id="${exercise.id}">Usuń</button>
                         </li>
                     `).join('');
     
-                    // Dodaj nasłuchiwacze zdarzeń do przycisków edycji
+                    // Dodaj nasłuchiwacze zdarzeń do przycisków
                     exercisesList.querySelectorAll('.edit-button').forEach(button => {
                         button.addEventListener('click', () => this.handleEditExercise(button.dataset.id));
                     });
@@ -184,55 +173,28 @@ class App {
             }
         }
     }
-
     async handleEditExercise(exerciseId) {
         const exercise = await this.exerciseService.getExercise(exerciseId); // Pobierz dane ćwiczenia
-        if (exercise) {
-            // Wypełnij formularz danymi ćwiczenia
-            document.getElementById('edit-exercise-name').value = exercise.name;
-            document.getElementById('edit-exercise-description').value = exercise.description;
-            document.getElementById('edit-weight-checkbox').checked = exercise.options.weight;
-            document.getElementById('edit-reps-checkbox').checked = exercise.options.reps;
-            document.getElementById('edit-time-checkbox').checked = exercise.options.time;
-
-            // Pokaż dialog edytowania
-            document.getElementById('edit-exercise-dialog').classList.remove('hidden');
-
-            // Obsługa wysłania formularza
-            const editExerciseForm = document.getElementById('edit-exercise-form');
-            editExerciseForm.onsubmit = async (e) => {
-                e.preventDefault();
-                const updatedData = {
-                    name: document.getElementById('edit-exercise-name').value,
-                    description: document.getElementById('edit-exercise-description').value,
-                    options: {
-                        weight: document.getElementById('edit-weight-checkbox').checked,
-                        reps: document.getElementById('edit-reps-checkbox').checked,
-                        time: document.getElementById('edit-time-checkbox').checked
-                    }
-                };
-                await this.exerciseService.updateExercise(exerciseId, updatedData);
-                this.loadExercises(); // Odśwież listę ćwiczeń
-                document.getElementById('edit-exercise-dialog').classList.add('hidden'); // Ukryj dialog
-            };
-
-            // Obsługa anulowania
-            document.getElementById('cancel-edit-exercise').onclick = () => {
-                document.getElementById('edit-exercise-dialog').classList.add('hidden'); // Ukryj dialog
-            };
+        const newName = prompt("Wprowadź nową nazwę ćwiczenia:", exercise.name);
+        const newDescription = prompt("Wprowadź nowy opis ćwiczenia:", exercise.description);
+    
+        if (newName && newDescription) {
+            await this.exerciseService.updateExercise(exerciseId, {
+                name: newName,
+                description: newDescription,
+                options: exercise.options // Zachowaj oryginalne opcje
+            });
+            this.loadExercises(); // Odśwież listę ćwiczeń
         }
     }
     async handleDeleteExercise(exerciseId) {
         const confirmation = await this.showDeleteConfirmationDialog();
         if (confirmation) {
-            try {
-                await this.exerciseService.deleteExercise(exerciseId); // Upewnij się, że masz tę metodę w ExerciseService
-                this.loadExercises(); // Odśwież listę ćwiczeń
-            } catch (error) {
-                console.error('Błąd podczas usuwania ćwiczenia:', error);
-            }
+            await this.exerciseService.deleteExercise(exerciseId);
+            this.loadExercises(); // Odśwież listę ćwiczeń
         }
     }
+    
     showDeleteConfirmationDialog() {
         return new Promise((resolve) => {
             const dialog = document.getElementById('custom-confirm-dialog-exercise');
@@ -294,7 +256,7 @@ class App {
         }
     }
 
-    setupEventListenersApp() {
+    setupEventListeners() {
         if (this.loginButton) {
             this.loginButton.addEventListener('click', () => this.showAuthSection());
         }
@@ -349,12 +311,6 @@ class App {
                 try {
                     const userData = await this.userService.getUserData(user.uid);
                     if (userData) {
-                        if (!this.scoreDisplay) {
-                            this.scoreDisplay = new ScoreDisplay(this.scoreService, this.authService, this.notificationManager, this.exerciseService);
-                            await this.scoreDisplay.init();
-                        } else {
-                            console.log("ScoreDisplay already initialized");
-                        }
                         this.updateNavigation(true);
                         this.statisticsDisplay.init();
                         this.updateUserInfo(userData, user.email);
@@ -376,7 +332,6 @@ class App {
                     this.notificationManager.show('Wystąpił błąd podczas pobierania danych użytkownika', 'error');
                 }
             } else {
-                this.scoreDisplay = null;
                 this.updateNavigation(false);
                 manageSectionsVisibility(false, true); // Dodaj true jako drugi argument
             }
@@ -440,14 +395,4 @@ class App {
 document.addEventListener('DOMContentLoaded', () => {
     new App();
     initNavigation();
-});
-// Po załadowaniu DOM
-document.addEventListener('DOMContentLoaded', () => {
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    // Obsługa kliknięcia w hamburger menu
-    hamburgerMenu.addEventListener('click', () => {
-        navLinks.classList.toggle('active'); // Przełącz klasę active
-    });
 });

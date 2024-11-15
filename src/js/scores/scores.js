@@ -42,7 +42,33 @@ export class ScoreService {
         this.notificationManager = notificationManager; // Przechowuj instancję NotificationManager
     }
     
+    async addScore(exerciseType, weight, reps) {
+        try {
+            console.log('Dodawanie wyniku...');
+            const user = this.auth.currentUser ;
+            if (!user) throw new Error('Użytkownik nie jest zalogowany');
 
+            const scoreData = {
+                userId: user.uid,
+                userEmail: user.email,
+                exerciseType,
+                weight,
+                reps,
+                timestamp: Date.now(),
+            };
+
+            console.log('Dane wyniku:', scoreData);
+            const docRef = await addDoc(this.scoresCollection, scoreData);
+            console.log('Wynik dodany pomyślnie! ID dokumentu:', docRef.id);
+            this.cache.clear();
+            this.notificationManager.show('Wynik dodany pomyślnie!', 'success'); // Powiadomienie o sukcesie
+        } catch (error) {
+            console.error('Błąd podczas dodawania wyniku:', error);
+            this.notificationManager.show('Błąd podczas dodawania wyniku: ' + error.message, 'error'); // Powiadomienie o błędzie
+            throw error;
+        }
+    }
+    
     async loadScores() {
         try {
             const user = this.auth.currentUser;

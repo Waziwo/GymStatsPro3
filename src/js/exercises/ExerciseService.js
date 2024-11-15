@@ -46,6 +46,8 @@ export class ExerciseService {
             const exercises = exercisesSnapshot.docs
                 .map(doc => ({ id: doc.id, ...doc.data() }))
                 .filter(exercise => exercise.userId === userId);
+    
+            // Upewnij się, że zawsze zwracasz tablicę
             return exercises || [];
         } catch (error) {
             console.error('Błąd podczas wczytywania ćwiczeń:', error);
