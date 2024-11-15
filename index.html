@@ -19,11 +19,6 @@
                 <i class="fas fa-dumbbell"></i>
                 <span>GymStats Pro</span>
             </a>
-            <button class="hamburger-menu" aria-label="Menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
             <div class="nav-links">        
                 <a href="#features" class="nav-link">Funkcje</a>
                 <a href="#about" class="nav-link">O nas</a>
@@ -244,9 +239,7 @@
                                 <label for="exercise-type">Ćwiczenie</label>
                                 <select id="exercise-type" required>
                                     <option value="">Wybierz ćwiczenie</option>
-                                    <option value="Wyciskanie sztangi">Wyciskanie sztangi</option>
-                                    <option value="Przysiad">Przysiad</option>
-                                    <option value="Martwy ciąg">Martwy ciąg</option>
+                                    <!-- Opcje będą dodawane tutaj -->
                                 </select>
                             </div>
                             <div class="form-group">
@@ -330,6 +323,34 @@
                                 </div>
                             </li>
                         </ul>
+                        <div id="edit-exercise-dialog" class="custom-dialog hidden">
+                            <div class="dialog-content">
+                                <h3>Edytuj ćwiczenie</h3>
+                                <form id="edit-exercise-form">
+                                    <div class="form-group">
+                                        <label for="edit-exercise-name">Nazwa ćwiczenia</label>
+                                        <input type="text" id="edit-exercise-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-exercise-description">Opis ćwiczenia (opcjonalny)</label>
+                                        <input type="text" id="edit-exercise-description">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-weight-checkbox"> Ciężar (kg)</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-reps-checkbox"> Powtórzenia</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><input type="checkbox" id="edit-time-checkbox"> Czas (min)</label>
+                                    </div>
+                                    <div class="dialog-buttons">
+                                        <button type="button" id="cancel-edit-exercise" class="btn-secondary">Anuluj</button>
+                                        <button type="submit" class="btn-primary">Zapisz zmiany</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <div id="add-exercise-dialog" class="custom-dialog hidden">
                             <div class="dialog-content">
                                 <h3>Dodaj nowe ćwiczenie</h3>
@@ -413,6 +434,6 @@
             console.error("Błąd inicjalizacji Firebase:", error);
         }
     </script>
-    <script type="module" src="src/js/app.js"></script>
+        <script type="module" src="src/js/app.js"></script>
 </body>
 </html>
